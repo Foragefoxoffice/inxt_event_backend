@@ -35,8 +35,15 @@ app.post('/api/maintenance/clear-cache', (req, res) => {
 
 initSocket(httpServer)
 
-connectDB().then(() => {
+// Connect to MongoDB once when the server starts
+connectDB().catch(err => {
+  console.error('Failed to connect to MongoDB:', err)
+})
+
+if (process.env.VERCEL !== '1') {
   httpServer.listen(process.env.PORT || 4000, () => {
     console.log(`Server running on port ${process.env.PORT || 4000}`)
   })
-})
+}
+
+export default app
