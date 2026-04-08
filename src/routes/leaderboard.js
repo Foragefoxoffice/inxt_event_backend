@@ -16,9 +16,12 @@ router.get('/:gameId', async (req, res) => {
     let query = Session.find({ gameId: req.params.gameId })
 
     // No longer filter only completed crosswords — show all progress
+    // Crossword: sort by score DESC, duration ASC
     const sortOption = isInterview 
       ? { completedAt: -1 } 
-      : { 'result.score': -1, completedAt: 1 }
+      : isCrossword
+        ? { 'result.score': -1, duration: 1, completedAt: 1 }
+        : { 'result.score': -1, completedAt: 1 }
 
     const sessions = await query
       .sort(sortOption)
@@ -31,16 +34,17 @@ router.get('/:gameId', async (req, res) => {
 
     const entries = sessions.map((s, i) => {
       if (!isCrossword) {
-        if (s.result.score !== prevScore) {
+        if (s.result?.score !== prevScore) {
           currentRank = i + 1
-          prevScore = s.result.score
+          prevScore = s.result?.score
         }
       }
       return {
         rank: isCrossword ? i + 1 : currentRank,
         name: s.userId?.name,
         company: s.userId?.company,
-        score: s.result.score,
+        score: s.result?.score || 0,
+        duration: s.duration,
         completedAt: s.completedAt
       }
     })
