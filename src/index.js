@@ -36,9 +36,12 @@ app.post('/api/maintenance/clear-cache', (req, res) => {
 initSocket(httpServer)
 
 // Connect to MongoDB once when the server starts
-connectDB().catch(err => {
-  console.error('Failed to connect to MongoDB:', err)
-})
+// Top-level await is used to ensure the connection is established before accepting requests
+try {
+  await connectDB()
+} catch (err) {
+  console.error('CRITICAL: Failed to connect to MongoDB:', err)
+}
 
 if (process.env.VERCEL !== '1') {
   httpServer.listen(process.env.PORT || 4000, () => {
