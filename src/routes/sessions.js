@@ -9,8 +9,7 @@ const router = Router()
 // POST /api/sessions/submit
 router.post('/submit', async (req, res) => {
   try {
-    console.log('[SESSIONS_SUBMIT] Incoming Request Payload:', JSON.stringify(req.body, null, 2))
-    const { playerId, gameId, answers } = req.body
+    const { playerId, gameId, answers, duration } = req.body
     if (!playerId || !gameId || !answers) {
       return res.status(400).json({ error: 'playerId, gameId, and answers are required' })
     }
@@ -22,7 +21,8 @@ router.post('/submit', async (req, res) => {
       playerId,
       userId: user._id,
       gameId,
-      answers
+      answers,
+      duration
     })
 
     res.json({

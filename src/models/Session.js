@@ -17,6 +17,7 @@ const sessionSchema = new mongoose.Schema({
   gameType: { type: String, required: true },
   answers: [answerSchema],
   result: { type: mongoose.Schema.Types.Mixed, required: true },
+  duration: { type: Number, default: null }, // Duration in seconds
   completedAt: { type: Date, default: Date.now }
 }, { timestamps: true })
 

@@ -7,54 +7,92 @@ import Session from '../models/Session.js'
 import { getQuestions } from '../cache.js'
 import { generateAgencyDiagnosis } from '../services/ai.js'
 import Stats from '../models/Stats.js'
-import { getIO } from '../socket.js'
+import { getIO, emitToEvent } from '../socket.js'
 
 async function updateStatsAndEmit(eventId, gameType, session) {
   try {
+    const isMyth = gameType === 'MYTH'
+    const isAgency = gameType === 'AGENCY'
+    const isCrossword = gameType === 'CROSSWORD'
+
+    // 1. Update DB Stats
+    const update = {
+      $inc: { totalSubmissions: 1 }
+    }
+    
+    // Specific logic for Myth AI Match
+    if (isMyth) {
+      const isMatch = (session.result?.score || 0) >= 70 // Threshold for "matching" AI
+      if (isMatch) update.$inc.totalAiMatched = 1
+      update.$inc.scoreSum = session.result?.score || 0
+    }
+    
+    // Specific logic for Crossword completions
+    if (isCrossword && (session.result?.score || 0) === 100) {
+      update.$inc.totalCompletions = 1
+    }
+
     const stats = await Stats.findOneAndUpdate(
-      { eventId, gameType },
-      { 
-        $inc: { totalParticipants: 1, totalScore: session.result?.score || 100 },
-        $push: { recentPlayers: { playerId: session.playerId, score: session.result?.score || 100, timestamp: new Date() } }
-      },
-      { upsert: true, new: true }
+      { gameId: session.gameId }, // Query by specific game for multi-game support
+      update,
+      { upsert: true, new: true, setDefaultsOnInsert: true }
     )
 
-    const io = getIO()
-    if (io) {
-      // 1. Emit Stats Signal
-      io.to(String(eventId)).emit('stats:update', { gameId: session.gameId, stats })
-
-      // 2. Fetch and Emit Fresh Leaderboard (Top 10)
-      const isCrossword = gameType === 'CROSSWORD'
-      const isInterview = gameType === 'INTERVIEW'
-      const sortOption = isInterview ? { completedAt: -1 } : { 'result.score': -1, completedAt: 1 }
-
-      const topEntries = await Session.find({ gameId: session.gameId })
-        .sort(sortOption)
-        .limit(10)
-        .populate('userId', 'name company')
-        .lean()
-
-      const entries = topEntries.map((s, i) => ({
-        rank: i + 1,
-        name: s.userId?.name,
-        company: s.userId?.company,
-        score: s.result.score,
-        completedAt: s.completedAt
-      }))
-
-      io.to(String(eventId)).emit('leaderboard:update', { gameId: session.gameId, top5: entries })
+    // Calculate derived fields (AI Match %, etc)
+    if (isMyth && stats.totalSubmissions > 0) {
+      stats.aiMatchPercent = Math.round(((stats.totalAiMatched || 0) / stats.totalSubmissions) * 100)
+      stats.avgScore = Math.round((stats.scoreSum || 0) / stats.totalSubmissions)
+      await stats.save()
     }
-    console.log('[SUBMIT] Stats & Leaderboard Synced Successfully')
+
+    // 2. Emit Real-time Refresh Signals
+    // Using emitToEvent to ensure correct 'event:ID' room targeting
+    emitToEvent(eventId, 'stats:update', { gameId: session.gameId, stats })
+
+    // 2. Fetch and Emit Fresh Leaderboard (Top 10)
+    const isInterview = gameType === 'INTERVIEW'
+    
+    // For Crossword, we want to sort by score DESC, then duration ASC (if score 100)
+    const sortOption = isInterview 
+      ? { completedAt: -1 } 
+      : isCrossword 
+        ? { 'result.score': -1, duration: 1, completedAt: 1 } 
+        : { 'result.score': -1, completedAt: 1 }
+
+    const topEntries = await Session.find({ gameId: session.gameId })
+      .sort(sortOption)
+      .limit(10)
+      .populate('userId', 'name company')
+      .lean()
+
+    const entries = topEntries.map((s, i) => ({
+      rank: i + 1,
+      name: s.userId?.name,
+      company: s.userId?.company,
+      score: s.result?.score || 0,
+      duration: s.duration,
+      completedAt: s.completedAt
+    }))
+
+    emitToEvent(eventId, 'leaderboard:update', { gameId: session.gameId, top5: entries })
+    
+    // Special winner alert for Crossword
+    if (isCrossword && (session.result?.score || 0) === 100) {
+      emitToEvent(eventId, 'crossword:winner', { 
+        name: entries[0]?.name, 
+        company: entries[0]?.company 
+      })
+    }
+
+    console.log(`[SUBMIT] Stats & Leaderboard Sync Emitted for event: ${eventId}`)
   } catch (err) {
-    console.error('[STATS_ERROR] Failed to update stats:', err.message)
+    console.error('[STATS_ERROR] Failed to sync live dashboard:', err)
   }
 }
 
-export async function submitGame({ playerId, userId, gameId, answers }) {
+export async function submitGame({ playerId, userId, gameId, answers, duration }) {
   try {
-    console.log(`[ENGINE] Processing submission. ID: ${gameId}, Player: ${playerId}`)
+    console.log(`[ENGINE] Processing submission. ID: ${gameId}, Player: ${playerId}, Duration: ${duration}s`)
 
     // Check for duplicate submission
     const existing = await Session.findOne({ playerId, gameId }).lean()
@@ -118,7 +156,8 @@ export async function submitGame({ playerId, userId, gameId, answers }) {
       eventId: game.eventId,
       gameType: game.type,
       answers: engineResult.answersWithMeta || [],
-      result: { ...engineResult.result, aiResult }
+      result: { ...engineResult.result, aiResult },
+      duration
     })
 
     // Update global dashboard statistics

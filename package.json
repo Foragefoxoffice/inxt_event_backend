@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "seed": "node src/seed.js"
+    "seed": "node src/seed.js",
+    "seed-attendance": "node src/seed-attendance.js",
+    "clear-event-data": "node src/clear-data.js"
   },
   "keywords": [],
   "author": "",
