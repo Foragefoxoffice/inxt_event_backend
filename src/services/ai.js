@@ -57,7 +57,7 @@ async function generateAssessment(metadata, categoryBreakdown, metrics) {
     .map(c => c.category).join(', ')
 
   return await gptJson(
-    'You are a senior Takaful agency performance analyst. Return ONLY valid JSON. Be specific and use the player\'s actual data.',
+    'You are a senior agency performance analyst. Return ONLY valid JSON. Be specific and use the player\'s actual data.',
     `
 Agency Leader: ${metadata.clientName} (${metadata.role})
 Agency Type: ${metadata.agencyType} | Team Size: ${metadata.agentCount} agents
@@ -109,7 +109,7 @@ async function generateActionPlan(metadata, categoryBreakdown) {
   }).join('\n\n')
 
   return await gptJson(
-    'You are a Takaful agency transformation consultant. Return ONLY valid JSON. Generate one action per gap listed, no more, no less.',
+    'You are a agency transformation consultant. Return ONLY valid JSON. Generate one action per gap listed, no more, no less.',
     `
 Agency: ${metadata.clientName} | ${metadata.agencyType} | ${metadata.agentCount} agents | Role: ${metadata.role}
 
@@ -141,7 +141,7 @@ async function generateSolutions(metadata, categoryBreakdown) {
   const breakdown = formatBreakdown(gapCategories)
 
   return await gptJson(
-    'You are a Takaful digital transformation specialist. Return ONLY valid JSON. Only generate solutions for actual gaps listed.',
+    'You are a digital transformation specialist. Return ONLY valid JSON. Only generate solutions for actual gaps listed.',
     `
 Agency: ${metadata.clientName} | ${metadata.agencyType} | ${metadata.agentCount} agents
 

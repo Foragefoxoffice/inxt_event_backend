@@ -53,7 +53,7 @@ export async function sendDiagnosticReport({ to, name, organisation, result, aiR
         </div>
         
         <div style="background: #fdfdfd; padding: 20px; text-align: center; font-size: 12px; color: #9CA3AF; border-top: 1px solid #eee;">
-          &copy; 2026 SalesVerse AI Consultant. Generated during Takaful Summit.
+          &copy; 2026 SalesVerse AI Consultant. Generated during Summit.
         </div>
       </div>
     `

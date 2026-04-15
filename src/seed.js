@@ -12,7 +12,7 @@ async function seed() {
   await mongoose.connect(process.env.MONGODB_URI)
   console.log('Seed: Connected to DB')
 
-  const event = await Event.findOne({ isActive: true }) || await Event.findOne() || await Event.create({ name: 'Takaful Summit 2026', slug: 'takaful-2026', isActive: true })
+  const event = await Event.findOne({ isActive: true }) || await Event.findOne() || await Event.create({ name: 'Summit 2026', slug: 'summit-2026', isActive: true })
 
   // Find or create Agency Game
   let agencyGame = await Game.findOne({ type: 'AGENCY', eventId: event._id })
@@ -144,7 +144,7 @@ async function seed() {
           text: 'What happens to your customer relationships when an agent leaves your agency?',
           options: [
             { label: 'Customer portfolio moves with the agent — agency has no independent relationship', subtitle: 'When an agent leaves, their customers often follow or simply disengage. The agency built no independent relationship with the customer base it invested to acquire.', scoreImpact: { lifecycle: 10 } },
-            { label: 'No claim support process — customers navigate claims alone and feel abandoned', subtitle: 'When a customer makes a claim, they deal with the operator directly. The most critical loyalty moment in Takaful becomes a source of frustration.', scoreImpact: { lifecycle: 15 } },
+            { label: 'No claim support process — customers navigate claims alone and feel abandoned', subtitle: 'When a customer makes a claim, they deal with the operator directly. The most critical loyalty moment in becomes a source of frustration.', scoreImpact: { lifecycle: 15 } },
             { label: 'No referral programme — happy customers don\'t become growth engines', subtitle: 'Satisfied customers are the cheapest source of new business. But without a structured programme, referrals happen randomly if at all.', scoreImpact: { lifecycle: 20 } },
             { label: 'Agency-level CRM — customers belong to the agency, not the agent', subtitle: 'SalesVerse builds the relationship at the agency level. Agent departure = zero customer disruption (BENCHMARK)', scoreImpact: { lifecycle: 40 }, badge: 'AI-POWERED' }
           ]
@@ -226,15 +226,15 @@ async function seed() {
 
   const mythScenarios = [
     {
-      text: 'You are a Takaful agent with 3 waiting leads. Who do you call first?',
+      text: 'You are a agent with 3 waiting leads. Who do you call first?',
       answer: 'Lead Prioritisation',
       sectionLabel: 'SALES & DISTRIBUTION',
-      hostProposal: 'You are a Takaful agent. 3 leads. 30 seconds. Who do you call first?',
+      hostProposal: 'You are a agent. 3 leads. 30 seconds. Who do you call first?',
       aiRationale: "Highest protection gap + family dependency = urgency. High income supports premium. Protection need is time-sensitive when dependants are involved. SalesVerse surfaces this combination instantly.\n\n« AI reads financial vulnerability, not just interest level. SalesVerse prioritises need — not convenience. »",
       options: [
         { label: 'LEAD A', shortLabel: 'Azmi, Age 28', subtitle: 'Status: Single|Income: Medium|Interest: Savings Plan|Last contact: Never', badge: 'Savings plans have lower urgency — single, no dependants. Good prospect, but not priority today.', isCorrect: false },
         { label: 'LEAD B', shortLabel: 'Hassan, Age 40', subtitle: 'Status: Married, 2 kids|Income: High|Interest: Protection|Last contact: Never', badge: 'Correct — AI agrees. Family dependency + high income + protection interest = highest-value, most urgent call.', isCorrect: true },
-        { label: 'LEAD C', shortLabel: 'Rosmah, Age 35', subtitle: 'Status: Married|Income: Medium|Interest: Medical Takaful|Last contact: Never', badge: 'Medical Takaful is a genuine need, but family protection with two kids is statistically more urgent.', isCorrect: false }
+        { label: 'LEAD C', shortLabel: 'Rosmah, Age 35', subtitle: 'Status: Married|Income: Medium|Interest: Medical|Last contact: Never', badge: 'Medical is a genuine need, but family protection with two kids is statistically more urgent.', isCorrect: false }
       ]
     },
     {
@@ -250,15 +250,15 @@ async function seed() {
       ]
     },
     {
-      text: 'A loyal customer paid their second Family Takaful year on time. They just bought a new home. What do you offer next?',
+      text: 'A loyal customer paid their second Family year on time. They just bought a new home. What do you offer next?',
       answer: 'Cross-sell Opportunity',
       sectionLabel: 'UPSELL & CROSS-SELL',
       hostProposal: 'Loyal customer paid year 2 on time. New home purchase detected. What do you offer next?',
-      aiRationale: "Life event trigger — new home purchase is the strongest cross-sell signal in Takaful. Mortgage protection urgency is immediate. SalesVerse detects life events and surfaces the right product automatically.\n\n« AI reads life events. Agents need to too — SalesVerse connects both so nothing is missed. »",
+      aiRationale: "Life event trigger — new home purchase is the strongest cross-sell signal in. Mortgage protection urgency is immediate. SalesVerse detects life events and surfaces the right product automatically.\n\n« AI reads life events. Agents need to too — SalesVerse connects both so nothing is missed. »",
       options: [
         { label: 'OPTION A', shortLabel: 'Upgrade Sum Covered', subtitle: 'Increase existing protection|Higher premium same product|Low friction upsell|Moderate conversion rate', badge: 'A reasonable upsell but misses the most urgent and time-sensitive trigger — the new home.', isCorrect: false },
         { label: 'OPTION B', shortLabel: 'Add Medical Rider', subtitle: 'Hospitalisation coverage|Universally relevant need|Easy add-on|High acceptance rate', badge: 'Good instinct — but a stronger, more urgent opportunity exists based on the life event signal.', isCorrect: false },
-        { label: 'OPTION C', shortLabel: 'Takaful Mortgage Plan', subtitle: 'New home = perfect trigger|Protects mortgage repayment|Highest urgency right now|Strongest conversion signal', badge: 'Correct — AI agrees. New home = immediate need for mortgage protection. Highest conversion probability by far.', isCorrect: true }
+        { label: 'OPTION C', shortLabel: 'Mortgage Plan', subtitle: 'New home = perfect trigger|Protects mortgage repayment|Highest urgency right now|Strongest conversion signal', badge: 'Correct — AI agrees. New home = immediate need for mortgage protection. Highest conversion probability by far.', isCorrect: true }
       ]
     },
     {
@@ -274,15 +274,15 @@ async function seed() {
       ]
     },
     {
-      text: 'A 29-year-old fresh graduate enquires about Takaful. No dependants. First job. What do you recommend?',
+      text: 'A 29-year-old fresh graduate enquires about. No dependants. First job. What do you recommend?',
       answer: 'Product Match',
       sectionLabel: 'NEED-BASED SELLING',
       hostProposal: '29-year-old fresh graduate. No dependants. What\'s your recommendation?',
-      aiRationale: "Life stage = savings priority. Investment-linked plans appeal strongly to young professionals. Dual value (grow money + stay protected) increases persistency. SalesVerse maps life stage to product automatically.\n\n« Need-based selling isn't just ethical in Takaful — it's smarter business. SalesVerse ensures agents never miss the right fit. »",
+      aiRationale: "Life stage = savings priority. Investment-linked plans appeal strongly to young professionals. Dual value (grow money + stay protected) increases persistency. SalesVerse maps life stage to product automatically.\n\n« Need-based selling isn't just ethical in — it's smarter business. SalesVerse ensures agents never miss the right fit. »",
       options: [
-        { label: 'OPTION A', shortLabel: 'Term Family Takaful', subtitle: 'High coverage sum|High monthly premium|Protection-heavy|Risk of early lapse — high cost', badge: 'High premiums create affordability risk for fresh graduates. High early lapse probability reduces long-term value.', isCorrect: false },
-        { label: 'OPTION B', shortLabel: 'Investment-linked Takaful', subtitle: 'Savings + protection combined|Flexible premium entry|Growth component|Long-term loyalty builder', badge: 'Correct — AI agrees. Investment + protection at a flexible entry point matches the life stage and builds loyalty.', isCorrect: true },
-        { label: 'OPTION C', shortLabel: 'Medical Takaful Only', subtitle: 'Hospitalisation coverage|Lowest monthly commitment|Single-need solution|No savings component', badge: 'Covers one need but misses the bigger savings opportunity. A partial solution for this profile.', isCorrect: false }
+        { label: 'OPTION A', shortLabel: 'Term Family', subtitle: 'High coverage sum|High monthly premium|Protection-heavy|Risk of early lapse — high cost', badge: 'High premiums create affordability risk for fresh graduates. High early lapse probability reduces long-term value.', isCorrect: false },
+        { label: 'OPTION B', shortLabel: 'Investment-linked', subtitle: 'Savings + protection combined|Flexible premium entry|Growth component|Long-term loyalty builder', badge: 'Correct — AI agrees. Investment + protection at a flexible entry point matches the life stage and builds loyalty.', isCorrect: true },
+        { label: 'OPTION C', shortLabel: 'Medical Only', subtitle: 'Hospitalisation coverage|Lowest monthly commitment|Single-need solution|No savings component', badge: 'Covers one need but misses the bigger savings opportunity. A partial solution for this profile.', isCorrect: false }
       ]
     },
     {
@@ -302,9 +302,9 @@ async function seed() {
       answer: 'Channel Investment',
       sectionLabel: 'GROWTH STRATEGY',
       hostProposal: 'RM 50,000 to invest in one distribution channel next quarter. Where does it go?',
-      aiRationale: "Digital has the lowest cost per policy AND 34% year-on-year growth — compounding return. Agency converts better but costs 1.8× more. Bancatakaful is flat. RM 50K in digital builds infrastructure that scales beyond the quarter. SalesVerse tracks channel ROI in real time.\n\n« SalesVerse gives channel-level ROI visibility in real time — so budget decisions are driven by data, not gut feel. »",
+      aiRationale: "Digital has the lowest cost per policy AND 34% year-on-year growth — compounding return. Agency converts better but costs 1.8× more. Bancais flat. RM 50K in digital builds infrastructure that scales beyond the quarter. SalesVerse tracks channel ROI in real time.\n\n« SalesVerse gives channel-level ROI visibility in real time — so budget decisions are driven by data, not gut feel. »",
       options: [
-        { label: 'CHANNEL A', shortLabel: 'Bancatakaful', subtitle: 'Conversion rate: 22%|Cost per policy: RM 680|Avg premium: RM 240/month|Growth trend: Flat 2 years', badge: 'Bancatakaful has decent conversion but flat growth and high cost. Investment here maintains, not grows.', isCorrect: false },
+        { label: 'CHANNEL A', shortLabel: 'Banca', subtitle: 'Conversion rate: 22%|Cost per policy: RM 680|Avg premium: RM 240/month|Growth trend: Flat 2 years', badge: 'Bancahas decent conversion but flat growth and high cost. Investment here maintains, not grows.', isCorrect: false },
         { label: 'CHANNEL B', shortLabel: 'Digital / Direct', subtitle: 'Conversion rate: 18%|Cost per policy: RM 290|Avg premium: RM 195/month|Growth trend: +34% YoY', badge: 'Correct — AI agrees. Lowest cost per policy + highest growth trend = best compounding return on RM 50K.', isCorrect: true },
         { label: 'CHANNEL C', shortLabel: 'Agency (Tied Agents)', subtitle: 'Conversion rate: 31%|Cost per policy: RM 520|Avg premium: RM 310/month|Growth trend: +8% YoY', badge: 'Best conversion rate, but high cost and modest growth. Good channel, not the best marginal ROI for new budget.', isCorrect: false }
       ]
@@ -326,7 +326,7 @@ async function seed() {
       answer: 'Claims Priority',
       sectionLabel: 'OPERATIONS & SERVICE',
       hostProposal: '3 claims just came in. Your team can fast-track one. Which gets priority processing?',
-      aiRationale: "Dependant family with no income + complete documentation + longest-standing policy = highest urgency on humanitarian and Takaful principle grounds. Fast-tracking completes in days. The critical illness claim cannot be processed — paperwork is incomplete. SalesVerse flags documentation status automatically.\n\n« SalesVerse tracks documentation completeness and dependant flags — so the right claims get prioritised on day one. »",
+      aiRationale: "Dependant family with no income + complete documentation + longest-standing policy = highest urgency on humanitarian and principle grounds. Fast-tracking completes in days. The critical illness claim cannot be processed — paperwork is incomplete. SalesVerse flags documentation status automatically.\n\n« SalesVerse tracks documentation completeness and dependant flags — so the right claims get prioritised on day one. »",
       options: [
         { label: 'CLAIM A', shortLabel: 'Hospitalisation — RM 12,400', subtitle: 'Patient: Still admitted|Family: Requesting updates daily|Policy: 8 years active|Paperwork: Complete', badge: 'Genuine urgency with patient still admitted, but family has income. Process has daily updates available. Not the highest-stakes case today.', isCorrect: false },
         { label: 'CLAIM B', shortLabel: 'Critical Illness — RM 85,000', subtitle: 'Diagnosis: 3 weeks ago|Claimant: Single, no dependants|Policy: 3 years active|Paperwork: Incomplete', badge: 'Large payout, but incomplete paperwork means processing cannot complete regardless of priority. Fix the docs first.', isCorrect: false },
@@ -366,7 +366,7 @@ async function seed() {
   if (!crosswordGame) {
     crosswordGame = await Game.create({
       eventId: event._id,
-      title: 'Takaful AI Challenge',
+      title: 'AI Challenge',
       type: 'CROSSWORD',
       isActive: true
     })
@@ -451,12 +451,12 @@ async function seed() {
   }
   console.log(`Seed: Created ${crosswordQuestions.length} CROSSWORD questions`)
 
-  // ── INTERVIEW GAME: Voices of Takaful AI ──────────────────────────────────
+  // ── INTERVIEW GAME: Voices of AI ──────────────────────────────────
   let interviewGame = await Game.findOne({ type: 'INTERVIEW', eventId: event._id })
   if (!interviewGame) {
     interviewGame = await Game.create({
       eventId: event._id,
-      title: 'Voices of Takaful AI',
+      title: 'Voices of AI',
       type: 'INTERVIEW',
       isActive: true
     })
@@ -464,30 +464,30 @@ async function seed() {
   await Question.deleteMany({ gameId: interviewGame._id })
 
   const interviewData = [
-    { id: "tf1", text: "AI will eventually replace Takaful agents — True or False?", type: "tf", personas: ["cxo", "bdo", "operator", "agent", "association", "insuretech"], tip: "Expected: FALSE — but both answers generate great content. If they say TRUE, follow with: 'Really? What happens to the relationship side of Takaful?' The tension is the content.", host: "Say it fast — True or False? No explanation yet." },
-    { id: "tf2", text: "Takaful customers are harder to convert than conventional insurance — True or False?", type: "tf", personas: ["bdo", "agent", "operator"], tip: "Expected: FALSE — but experienced agents often say TRUE based on their reality. Both are valuable. If TRUE: 'What makes them harder?' If FALSE: 'What's the real barrier then?'", host: "Gut reaction first — True or False?" },
+    { id: "tf1", text: "AI will eventually replace agents — True or False?", type: "tf", personas: ["cxo", "bdo", "operator", "agent", "association", "insuretech"], tip: "Expected: FALSE — but both answers generate great content. If they say TRUE, follow with: 'Really? What happens to the relationship side of?' The tension is the content.", host: "Say it fast — True or False? No explanation yet." },
+    { id: "tf2", text: "customers are harder to convert than conventional insurance — True or False?", type: "tf", personas: ["bdo", "agent", "operator"], tip: "Expected: FALSE — but experienced agents often say TRUE based on their reality. Both are valuable. If TRUE: 'What makes them harder?' If FALSE: 'What's the real barrier then?'", host: "Gut reaction first — True or False?" },
     { id: "tf3", text: "Most insurers today have a technology problem — not an execution problem. True or False?", type: "tf", personas: ["cxo", "operator", "insuretech", "association"], tip: "Expected: FALSE — the strong take is that it's an execution problem. 'We don't lack tools. We lack implementation discipline.' This generates great LinkedIn engagement because it challenges the industry narrative.", host: "True or False — be honest." },
-    { id: "tf4", text: "Malaysian Takaful agents are ready to adopt AI tools today — True or False?", type: "tf", personas: ["cxo", "bdo", "agent", "association"], tip: "This is genuinely debatable and both sides are interesting. If TRUE: 'What makes you confident?' If FALSE: 'What's missing — skills, mindset, or tools?' The disagreement between leaders makes great content.", host: "Be honest — True or False?" },
-    { id: "tf5", text: "Digital Takaful will make traditional agency channels irrelevant within 10 years — True or False?", type: "tf", personas: ["cxo", "operator", "bdo", "association", "insuretech"], tip: "Expected: FALSE — hybrid wins. But get them to say it with specifics: 'The agent role changes — it doesn't disappear.' That line is quotable.", host: "True or False?" },
-    { id: "tf6", text: "More leads is what most Takaful agents actually need — True or False?", type: "tf", personas: ["bdo", "agent", "cxo"], tip: "Expected: FALSE — better conversion on existing leads. This question is a direct SalesVerse setup. If they say FALSE, follow: 'So what do they actually need?' The answer should be about tools, guidance, prioritisation.", host: "Quick reaction — True or False?" },
+    { id: "tf4", text: "Malaysian agents are ready to adopt AI tools today — True or False?", type: "tf", personas: ["cxo", "bdo", "agent", "association"], tip: "This is genuinely debatable and both sides are interesting. If TRUE: 'What makes you confident?' If FALSE: 'What's missing — skills, mindset, or tools?' The disagreement between leaders makes great content.", host: "Be honest — True or False?" },
+    { id: "tf5", text: "Digital will make traditional agency channels irrelevant within 10 years — True or False?", type: "tf", personas: ["cxo", "operator", "bdo", "association", "insuretech"], tip: "Expected: FALSE — hybrid wins. But get them to say it with specifics: 'The agent role changes — it doesn't disappear.' That line is quotable.", host: "True or False?" },
+    { id: "tf6", text: "More leads is what most agents actually need — True or False?", type: "tf", personas: ["bdo", "agent", "cxo"], tip: "Expected: FALSE — better conversion on existing leads. This question is a direct SalesVerse setup. If they say FALSE, follow: 'So what do they actually need?' The answer should be about tools, guidance, prioritisation.", host: "Quick reaction — True or False?" },
     { id: "tf7", text: "A great agent today can succeed without any technology — True or False?", type: "tf", personas: ["agent", "bdo", "cxo"], tip: "Expected: FALSE in 2026. But some senior agents will say TRUE based on their own career. Both answers are compelling. If TRUE: 'What does that look like in practice?' Great for agent-facing clips.", host: "Honest answer — True or False?" },
-    { id: "tf8", text: "The biggest barrier to Takaful growth in Malaysia is awareness, not access — True or False?", type: "tf", personas: ["operator", "association", "cxo"], tip: "Expected: TRUE from most operators. But some will say FALSE — access is the real problem, especially for B40 and rural communities. This generates meaningful discussion about inclusion.", host: "True or False?" },
-    { id: "tf9", text: "AI can fully respect Shariah compliance principles in Takaful selling — True or False?", type: "tf", personas: ["operator", "association", "insuretech", "cxo"], tip: "Genuinely controversial. InsureTech leaders tend to say TRUE; traditional operators tend to say FALSE. The debate itself is excellent LinkedIn content. Always follow with: 'What would need to be true for that to work?'", host: "Bold question — True or False?" },
+    { id: "tf8", text: "The biggest barrier to growth in Malaysia is awareness, not access — True or False?", type: "tf", personas: ["operator", "association", "cxo"], tip: "Expected: TRUE from most operators. But some will say FALSE — access is the real problem, especially for B40 and rural communities. This generates meaningful discussion about inclusion.", host: "True or False?" },
+    { id: "tf9", text: "AI can fully respect Shariah compliance principles in selling — True or False?", type: "tf", personas: ["operator", "association", "insuretech", "cxo"], tip: "Genuinely controversial. InsureTech leaders tend to say TRUE; traditional operators tend to say FALSE. The debate itself is excellent LinkedIn content. Always follow with: 'What would need to be true for that to work?'", host: "Bold question — True or False?" },
     { id: "tf10", text: "The insurance industry moves too slowly for AI to make a meaningful impact in the next 5 years — True or False?", type: "tf", personas: ["cxo", "insuretech", "association", "operator"], tip: "Expected: FALSE — change is accelerating. But if someone says TRUE, that's a fascinating counter-narrative. 'What's the blocker?' generates real insight.", host: "True or False — your genuine read on the industry." },
-    { id: "tf11", text: "Customer loyalty in Takaful is genuinely declining — True or False?", type: "tf", personas: ["cxo", "bdo", "operator"], tip: "Expected: TRUE based on persistency data. But the response matters — 'True, and here's what we're doing about it' vs 'True, and nobody's talking about it openly.' The latter is more compelling content.", host: "Based on what you see — True or False?" },
-    { id: "tf12", text: "The DITO framework will benefit smaller Takaful operators more than the big players — True or False?", type: "tf", personas: ["operator", "association", "cxo", "insuretech"], tip: "Genuinely debatable. Smaller operators see it as a competitive opening. Large operators see it as a threat to their moat. Both perspectives are valuable and generate industry discussion.", host: "Your take — True or False?" },
-    { id: "op1", text: "What is the single biggest inefficiency in Takaful distribution today?", type: "open", personas: ["bdo", "cxo", "agent", "operator"], tip: "This is the best question for BDMs and agency managers. Listen for: manual processes, follow-up failure, data silos, training gaps. Any of these is a direct SalesVerse use case — but do NOT say so during filming.", host: "Take your time — what's the one thing that wastes the most time or money?" },
+    { id: "tf11", text: "Customer loyalty in is genuinely declining — True or False?", type: "tf", personas: ["cxo", "bdo", "operator"], tip: "Expected: TRUE based on persistency data. But the response matters — 'True, and here's what we're doing about it' vs 'True, and nobody's talking about it openly.' The latter is more compelling content.", host: "Based on what you see — True or False?" },
+    { id: "tf12", text: "The DITO framework will benefit smaller operators more than the big players — True or False?", type: "tf", personas: ["operator", "association", "cxo", "insuretech"], tip: "Genuinely debatable. Smaller operators see it as a competitive opening. Large operators see it as a threat to their moat. Both perspectives are valuable and generate industry discussion.", host: "Your take — True or False?" },
+    { id: "op1", text: "What is the single biggest inefficiency in distribution today?", type: "open", personas: ["bdo", "cxo", "agent", "operator"], tip: "This is the best question for BDMs and agency managers. Listen for: manual processes, follow-up failure, data silos, training gaps. Any of these is a direct SalesVerse use case — but do NOT say so during filming.", host: "Take your time — what's the one thing that wastes the most time or money?" },
     { id: "op2", text: "If you could automate one process in your organisation tomorrow — what would it be?", type: "open", personas: ["cxo", "bdo", "operator", "agent"], tip: "Forces specificity. 'Renewal reminders' and 'lead follow-up' are the most common answers — and both are direct SalesVerse use cases. Great content because it's concrete and relatable.", host: "One thing. Tomorrow. What is it?" },
-    { id: "op3", text: "What does the ideal Takaful agent look like in 5 years?", type: "open", personas: ["cxo", "association", "bdo", "operator"], tip: "Generates forward-looking, aspirational content. Best for senior leaders and association members. Listen for: digital fluency, hybrid human-AI, specialisation, advisory role. All quotable.", host: "Paint the picture — what does the agent of the future do differently?" },
+    { id: "op3", text: "What does the ideal agent look like in 5 years?", type: "open", personas: ["cxo", "association", "bdo", "operator"], tip: "Generates forward-looking, aspirational content. Best for senior leaders and association members. Listen for: digital fluency, hybrid human-AI, specialisation, advisory role. All quotable.", host: "Paint the picture — what does the agent of the future do differently?" },
     { id: "op4", text: "If you had to describe AI in the insurance industry in one word — what would it be?", type: "open", personas: ["cxo", "bdo", "operator", "insuretech", "association", "agent"], tip: "Great as a closing question — fast, punchy, quotable. Common answers: 'Overdue', 'Necessary', 'Inevitable', 'Misunderstood', 'Experimental.' Any of these makes a strong standalone clip thumbnail.", host: "One word — first thing that comes to mind." },
     { id: "op5", text: "What does your most productive agent do differently from your average one?", type: "open", personas: ["bdo", "cxo"], tip: "Best for agency managers and BDMs. Answers often reveal: discipline in follow-up, CRM usage, early morning activity, qualification skills. All directly relatable to agents watching on LinkedIn.", host: "Be specific — what separates the top 10% from the rest?" },
     { id: "op6", text: "What would make you — or your agents — 30% more effective starting Monday?", type: "open", personas: ["agent", "bdo", "cxo"], tip: "Forces a concrete, actionable answer. Better than 'what do you need?' because it implies the solution exists. Great for agent-facing clips.", host: "Be practical. What's the 30% lift that's within reach?" },
-    { id: "op7", text: "Where is the biggest untapped growth opportunity in Malaysian Takaful right now?", type: "open", personas: ["operator", "association", "cxo", "insuretech"], tip: "Best for operators and association members. Generates industry-level insight. Common answers: B40 segment, micro-takaful, bancatakaful optimisation, digital-first products.", host: "Where are we leaving the most on the table?" },
+    { id: "op7", text: "Where is the biggest untapped growth opportunity in Malaysian right now?", type: "open", personas: ["operator", "association", "cxo", "insuretech"], tip: "Best for operators and association members. Generates industry-level insight. Common answers: B40 segment, micro-, bancaoptimisation, digital-first products.", host: "Where are we leaving the most on the table?" },
     { id: "op8", text: "What's the most overhyped technology in insurance right now?", type: "open", personas: ["insuretech", "cxo", "operator"], tip: "Contrarian question — generates the most interesting content. InsureTech leaders often call out blockchain, metaverse, or 'AI in general.' The controversy drives LinkedIn engagement.", host: "Be honest — what are people excited about that won't deliver?" },
     { id: "op9", text: "What keeps you up at night about your distribution strategy?", type: "open", personas: ["cxo", "operator"], tip: "Best for CXOs and senior leaders. Gets past the PR answer to the genuine strategic concern. Answers here are often the most quotable and shareable in the series.", host: "No filter — what's the real worry?" },
     { id: "op10", text: "What does 'digital transformation' actually mean to you — beyond the buzzword?", type: "open", personas: ["insuretech", "cxo", "operator", "association"], tip: "Great contrarian opener for InsureTech and operators. Forces a concrete definition. Common strong answers: 'It means my agents spend time selling, not reporting' — that's a usable quote.", host: "Strip away the jargon — what does it really mean in practice?" },
-    { id: "op11", text: "What is Malaysia's Takaful industry getting right that the rest of APAC should learn from?", type: "open", personas: ["association", "cxo", "operator"], tip: "Positive framing question — generates pride and genuine insight. Association and regulator guests typically have the strongest answers here. Good for closing a session on a high note.", host: "Where are we actually leading — not just keeping up?" },
-    { id: "op12", text: "What's one thing customers want from Takaful that the industry still isn't delivering?", type: "open", personas: ["agent", "bdo", "operator", "cxo"], tip: "Best for agents and BDMs who interact with customers daily. Answers often reveal: simplicity, speed, trust, affordability. All directly connect to SalesVerse's customer experience value proposition.", host: "The honest customer gap — what is it?" }
+    { id: "op11", text: "What is Malaysia's industry getting right that the rest of APAC should learn from?", type: "open", personas: ["association", "cxo", "operator"], tip: "Positive framing question — generates pride and genuine insight. Association and regulator guests typically have the strongest answers here. Good for closing a session on a high note.", host: "Where are we actually leading — not just keeping up?" },
+    { id: "op12", text: "What's one thing customers want from that the industry still isn't delivering?", type: "open", personas: ["agent", "bdo", "operator", "cxo"], tip: "Best for agents and BDMs who interact with customers daily. Answers often reveal: simplicity, speed, trust, affordability. All directly connect to SalesVerse's customer experience value proposition.", host: "The honest customer gap — what is it?" }
   ]
 
   for (let i = 0; i < interviewData.length; i++) {

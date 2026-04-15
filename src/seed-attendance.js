@@ -31,16 +31,16 @@ async function seedAttendance() {
     const interviewGame = games.find(g => g.type === 'INTERVIEW')
 
     const demoUsers = [
-      { name: 'Faizal Azmi', company: 'AIA Public Takaful' },
+      { name: 'Faizal Azmi', company: 'AIA Public' },
       { name: 'Siti Rohani', company: 'Prudential BSN' },
-      { name: 'Hassan Basri', company: 'Etiqa Takaful' },
-      { name: 'Nurul Izzah', company: 'Great Eastern Takaful' },
+      { name: 'Hassan Basri', company: 'Etiqa' },
+      { name: 'Nurul Izzah', company: 'Great Eastern' },
       { name: 'Selvam Arumugam', company: 'Hong Leong MSIG' },
-      { name: 'David Low', company: 'FWD Takaful' },
-      { name: 'Aishah Zain', company: 'AmMetLife Takaful' },
+      { name: 'David Low', company: 'FWD' },
+      { name: 'Aishah Zain', company: 'AmMetLife' },
       { name: 'Ravi Shankar', company: 'Sun Life Malaysia' },
-      { name: 'Ahmad Kamal', company: 'Takaful Ikhlas' },
-      { name: 'Rosmah Mansor', company: 'Zurich Takaful' }
+      { name: 'Ahmad Kamal', company: 'Ikhlas' },
+      { name: 'Rosmah Mansor', company: 'Zurich' }
     ]
 
     console.log(`Seeding ${demoUsers.length} demo users and their sessions...`)
