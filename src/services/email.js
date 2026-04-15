@@ -3,15 +3,17 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: process.env.SMTP_SECURE === 'true',
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
-  }
-})
+const transporter = process.env.SMTP_USER && process.env.SMTP_PASS
+  ? nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.SMTP_PORT || '587'),
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
+    }
+  })
+  : null
 
 export async function sendDiagnosticReport({ to, name, organisation, result, aiResult }) {
   const score = Math.round(Object.values(aiResult?.aiCalculatedScores || result.metrics || {}).reduce((a, b) => a + b, 0) / 4)
@@ -60,6 +62,10 @@ export async function sendDiagnosticReport({ to, name, organisation, result, aiR
   }
 
   try {
+    if (!transporter) {
+      console.log('Skipping email send (SMTP NOT CONFIGURED). Logged for: %s', to)
+      return { messageId: 'mock-id' }
+    }
     const info = await transporter.sendMail(mailOptions)
     console.log('Email sent: %s', info.messageId)
     return info
