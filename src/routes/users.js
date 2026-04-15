@@ -9,7 +9,7 @@ const router = Router()
 // POST /api/users/register
 router.post('/register', async (req, res) => {
   try {
-    const { name, company, eventId } = req.body
+    const { name, company, email, phone, eventId } = req.body
     if (!name || !company || !eventId) {
       return res.status(400).json({ error: 'name, company, and eventId are required' })
     }
@@ -17,8 +17,16 @@ router.post('/register', async (req, res) => {
     const event = await Event.findById(eventId)
     if (!event) return res.status(404).json({ error: 'Event not found' })
 
+    // Return existing player if same phone already registered for this event
+    if (phone) {
+      const existing = await User.findOne({ phone, eventId }).lean()
+      if (existing) {
+        return res.status(200).json({ playerId: existing.playerId, userId: existing._id, name: existing.name, company: existing.company })
+      }
+    }
+
     const playerId = uuidv4()
-    const user = await User.create({ playerId, name, company, eventId })
+    const user = await User.create({ playerId, name, company, email: email || null, phone: phone || null, eventId })
 
     emitToEvent(eventId, 'player:joined', { name, company })
 

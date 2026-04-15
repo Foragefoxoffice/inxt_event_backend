@@ -47,7 +47,7 @@ router.get('/:gameId/questions', async (req, res) => {
         if (!groups[key]) groups[key] = []
         groups[key].push(q)
       }
-      // Sort groups by the minimum order value in each group to keep scenario order stable
+      // Pick one random question per scenario, then shuffle order for each player
       const sortedKeys = Object.keys(groups).sort((a, b) => {
         const minA = Math.min(...groups[a].map(q => q.order))
         const minB = Math.min(...groups[b].map(q => q.order))
@@ -57,6 +57,11 @@ router.get('/:gameId/questions', async (req, res) => {
         const group = groups[key]
         return group[Math.floor(Math.random() * group.length)]
       })
+      // Shuffle scenario order so each player sees a different sequence
+      for (let i = servedQuestions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [servedQuestions[i], servedQuestions[j]] = [servedQuestions[j], servedQuestions[i]]
+      }
     } else if (isCrossword) {
       // If any of the questions already have manual grid coords, prefer those!
       // This allows manually designed layouts from seed.js to stay intact.

@@ -22,8 +22,11 @@ router.get('/events', async (req, res) => {
 
 router.post('/events', async (req, res) => {
   try {
-    const { name, slug } = req.body
+    const { name, slug, cloneFromEventId } = req.body
     const event = await Event.create({ name, slug, isActive: false })
+    if (cloneFromEventId) {
+      await cloneEventContent(cloneFromEventId, event._id)
+    }
     res.status(201).json(event)
   } catch (err) {
     res.status(500).json({ error: err.message })
@@ -187,6 +190,39 @@ async function recomputeAgencyMax(gameId) {
     agencyMaxPerMetric: maxPerMetric,
     maxPossibleScore: maxScore
   })
+}
+
+async function cloneEventContent(sourceEventId, targetEventId) {
+  const sourceGames = await Game.find({ eventId: sourceEventId }).lean()
+
+  for (const sourceGame of sourceGames) {
+    const clonedGame = await Game.create({
+      eventId: targetEventId,
+      title: sourceGame.title,
+      type: sourceGame.type,
+      isActive: sourceGame.isActive,
+      maxPossibleScore: sourceGame.maxPossibleScore,
+      agencyMaxPerMetric: sourceGame.agencyMaxPerMetric
+    })
+
+    await Stats.findOneAndUpdate(
+      { gameId: clonedGame._id },
+      { $setOnInsert: { gameId: clonedGame._id, eventId: targetEventId, gameType: clonedGame.type } },
+      { upsert: true }
+    )
+
+    const sourceQuestions = await Question.find({ gameId: sourceGame._id }).lean()
+    if (sourceQuestions.length === 0) continue
+
+    const clonedQuestions = sourceQuestions.map(({ _id, __v, gameId, ...question }) => ({
+      ...question,
+      gameId: clonedGame._id
+    }))
+
+    await Question.insertMany(clonedQuestions)
+    invalidateGame(String(clonedGame._id))
+    await recomputeAgencyMax(String(clonedGame._id))
+  }
 }
 
 export default router

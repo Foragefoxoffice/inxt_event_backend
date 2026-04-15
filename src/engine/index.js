@@ -22,8 +22,6 @@ async function updateStatsAndEmit(eventId, gameType, session) {
     
     // Specific logic for Myth AI Match
     if (isMyth) {
-      const isMatch = (session.result?.score || 0) >= 70 // Threshold for "matching" AI
-      if (isMatch) update.$inc.totalAiMatched = 1
       update.$inc.scoreSum = session.result?.score || 0
     }
     
@@ -40,8 +38,8 @@ async function updateStatsAndEmit(eventId, gameType, session) {
 
     // Calculate derived fields (AI Match %, etc)
     if (isMyth && stats.totalSubmissions > 0) {
-      stats.aiMatchPercent = Math.round(((stats.totalAiMatched || 0) / stats.totalSubmissions) * 100)
       stats.avgScore = Math.round((stats.scoreSum || 0) / stats.totalSubmissions)
+      stats.aiMatchPercent = stats.avgScore  // average match rate across all players
       await stats.save()
     }
 
@@ -94,12 +92,7 @@ export async function submitGame({ playerId, userId, gameId, answers, duration }
   try {
     console.log(`[ENGINE] Processing submission. ID: ${gameId}, Player: ${playerId}, Duration: ${duration}s`)
 
-    // Check for duplicate submission
-    const existing = await Session.findOne({ playerId, gameId }).lean()
-    if (existing) {
-      console.log('[ENGINE] Duplicate submission detected, returning existing session')
-      return { session: existing, alreadySubmitted: true }
-    }
+    // Each play creates a fresh session (kiosk — multiple players on same device)
 
     let game = await Game.findById(gameId).lean()
 

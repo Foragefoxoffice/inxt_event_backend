@@ -12,10 +12,10 @@ async function seed() {
   await mongoose.connect(process.env.MONGODB_URI)
   console.log('Seed: Connected to DB')
 
-  const event = await Event.findOne() || await Event.create({ name: 'Takaful Summit 2026', slug: 'takaful-2026', isActive: true })
+  const event = await Event.findOne({ isActive: true }) || await Event.findOne() || await Event.create({ name: 'Takaful Summit 2026', slug: 'takaful-2026', isActive: true })
 
   // Find or create Agency Game
-  let agencyGame = await Game.findOne({ type: 'AGENCY' })
+  let agencyGame = await Game.findOne({ type: 'AGENCY', eventId: event._id })
   if (!agencyGame) {
     agencyGame = await Game.create({
       eventId: event._id,
@@ -213,7 +213,7 @@ async function seed() {
   await Game.findByIdAndUpdate(agencyGame._id, { agencyMaxPerMetric: max })
 
   // ── MYTH GAME: Beat the AI ─────────────────────────────────────────────────
-  let mythGame = await Game.findOne({ type: 'MYTH' })
+  let mythGame = await Game.findOne({ type: 'MYTH', eventId: event._id })
   if (!mythGame) {
     mythGame = await Game.create({
       eventId: event._id,
@@ -362,7 +362,7 @@ async function seed() {
   console.log(`Seed: Created ${mythScenarios.length} MYTH scenarios`)
 
   // ── CROSSWORD GAME ─────────────────────────────────────────────────────────
-  let crosswordGame = await Game.findOne({ type: 'CROSSWORD' })
+  let crosswordGame = await Game.findOne({ type: 'CROSSWORD', eventId: event._id })
   if (!crosswordGame) {
     crosswordGame = await Game.create({
       eventId: event._id,
@@ -375,81 +375,70 @@ async function seed() {
 
   const crosswordQuestions = [
     {
-      text: "Lead-to-policy rate — the essential performance metric for every Takaful agent and agency manager",
-      answer: "CONVERSION",
-      aiRationale: "Starts with C. Think: what percentage of your leads actually sign up?",
+      text: "Licensed company that takes on risk — Malaysia has about 25 of them in GI",
+      answer: "INSURER",
+      aiRationale: "Starts with I. Who issues the policy?",
       gridNum: 1,
       gridDir: "down",
-      gridRow: 2,  // HTML row:1 + 1
-      gridCol: 6,  // HTML col:5 + 1
-      gridLen: 10,
+      gridRow: 1,
+      gridCol: 5,
+      gridLen: 7,
       order: 1
     },
     {
-      text: "Malaysia's Islamic insurance system — built on Shariah principles, mutual protection, and community solidarity",
-      answer: "TAKAFUL",
-      aiRationale: "The name of Islamic insurance itself. Malaysia has 18 licensed operators.",
+      text: "The human at the last mile of distribution — and the industry's most under-leveraged asset",
+      answer: "AGENT",
+      aiRationale: "5 letters. The person who sells, explains, and follows up.",
       gridNum: 2,
       gridDir: "down",
-      gridRow: 4,  // HTML row:3 + 1
-      gridCol: 2,  // HTML col:1 + 1
-      gridLen: 7,
+      gridRow: 1,
+      gridCol: 3,
+      gridLen: 5,
       order: 2
     },
     {
-      text: "Annual action that keeps a Takaful policy active — persistency depends on how well this is managed",
-      answer: "RENEWAL",
-      aiRationale: "What must happen every year to keep coverage running? R-E-N-E-W-A-L",
+      text: "Malaysia's biggest GI product segment — nearly 50% of gross written premium annually",
+      answer: "MOTOR",
+      aiRationale: "5 letters. Every car on the road needs one by law.",
       gridNum: 3,
       gridDir: "across",
-      gridRow: 4,  // HTML row:3 + 1
-      gridCol: 4,  // HTML col:3 + 1
-      gridLen: 7,
+      gridRow: 5,
+      gridCol: 1,
+      gridLen: 5,
       order: 3
     },
     {
-      text: "iorta TechNXT's AI-powered distribution platform — from lead capture through renewal, all automated",
-      answer: "SALESVERSE",
-      aiRationale: "iorta's flagship product. Two words merged. S-A-L-E-S-V-E-R-S-E",
+      text: "Annual moment when the insurer either retains or loses the customer — the highest-stakes touchpoint in GI",
+      answer: "RENEWAL",
+      aiRationale: "7 letters. Happens every year. Most lapses occur here.",
       gridNum: 4,
       gridDir: "across",
-      gridRow: 5,  // HTML row:4 + 1
-      gridCol: 1,  // HTML col:0 + 1
-      gridLen: 10,
+      gridRow: 6,
+      gridCol: 2,
+      gridLen: 7,
       order: 4
     },
     {
-      text: "Number of licensed Takaful and Retakaful operators in Malaysia, all regulated by Bank Negara Malaysia",
-      answer: "EIGHTEEN",
-      aiRationale: "Count Malaysia's licensed Takaful operators. The answer is a number written as a word.",
+      text: "What the policyholder pays for coverage — and the number every insurer is trying to grow",
+      answer: "PREMIUM",
+      aiRationale: "7 letters. What you collect every month or year.",
       gridNum: 5,
       gridDir: "across",
-      gridRow: 6,  // HTML row:5 + 1
-      gridCol: 6,  // HTML col:5 + 1
-      gridLen: 8,
+      gridRow: 7,
+      gridCol: 4,
+      gridLen: 7,
       order: 5
     },
     {
-      text: "Voluntary donation contribution pooled by participants — the Islamic mechanism enabling mutual Takaful protection",
-      answer: "TABARRU",
-      aiRationale: "Arabic for 'donation'. The giving that makes Takaful work. T-A-B-A-R-R-U",
+      text: "The document of protection — only truly matters when the customer needs to use it",
+      answer: "POLICY",
+      aiRationale: "6 letters. What your agent sells. What your customer trusts.",
       gridNum: 6,
-      gridDir: "across",
-      gridRow: 7,  // HTML row:6 + 1
-      gridCol: 1,  // HTML col:0 + 1
-      gridLen: 7,
+      gridDir: "down",
+      gridRow: 4,
+      gridCol: 8,
+      gridLen: 6,
       order: 6
-    },
-    {
-      text: "Takaful fund excess returned to participants after claims and expenses — a key ethical distinction from conventional insurance",
-      answer: "SURPLUS",
-      aiRationale: "What remains in the pool after all claims are settled. Returned to participants.",
-      gridNum: 7,
-      gridDir: "across",
-      gridRow: 8,  // HTML row:7 + 1
-      gridCol: 6,  // HTML col:5 + 1
-      gridLen: 7,
-      order: 7
     }
   ]
 
@@ -463,7 +452,7 @@ async function seed() {
   console.log(`Seed: Created ${crosswordQuestions.length} CROSSWORD questions`)
 
   // ── INTERVIEW GAME: Voices of Takaful AI ──────────────────────────────────
-  let interviewGame = await Game.findOne({ type: 'INTERVIEW' })
+  let interviewGame = await Game.findOne({ type: 'INTERVIEW', eventId: event._id })
   if (!interviewGame) {
     interviewGame = await Game.create({
       eventId: event._id,

@@ -5,7 +5,11 @@ export function handleMyth(answers, questions) {
   const answersWithMeta = []
   const reveals = []
 
-  for (const question of questions) {
+  // Only score questions the player was actually served (random one-per-scenario subset)
+  const playedIds = new Set(answers.map(a => String(a.questionId)))
+  const playedQuestions = questions.filter(q => playedIds.has(String(q._id)))
+
+  for (const question of playedQuestions) {
     const playerAnswer = answers.find(a => String(a.questionId) === String(question._id))
     const selectedOptionId = playerAnswer?.selectedOptionId
     const selectedOption = question.options.find(
@@ -39,11 +43,11 @@ export function handleMyth(answers, questions) {
       selectedOptionId: selectedOptionId || null,
       inputText: null,
       isCorrect,
-      aiMatched: false
+      aiMatched: isCorrect
     })
   }
 
-  const totalQuestions = questions.length
+  const totalQuestions = playedQuestions.length
   const score = totalQuestions > 0
     ? Math.round((correctCount / totalQuestions) * 100)
     : 0

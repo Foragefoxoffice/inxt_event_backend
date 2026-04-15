@@ -2,6 +2,7 @@ import { Router } from 'express'
 import Stats from '../models/Stats.js'
 import User from '../models/User.js'
 import Game from '../models/Game.js'
+import Question from '../models/Question.js'
 
 const router = Router()
 
@@ -13,8 +14,20 @@ router.get('/:eventId', async (req, res) => {
     const allStats = await Stats.find({ eventId }).lean()
     const games = await Game.find({ eventId }).select('_id title type').lean()
 
-    const result = games.map(game => {
+    const result = await Promise.all(games.map(async game => {
       const stats = allStats.find(s => String(s.gameId) === String(game._id)) || {}
+      
+      // Enriched question stats with text
+      let enrichedQuestionStats = []
+      if (stats.questionStats?.length > 0) {
+        const questionIds = stats.questionStats.map(qs => qs.questionId)
+        const questions = await Question.find({ _id: { $in: questionIds } }).select('text').lean()
+        enrichedQuestionStats = stats.questionStats.map(qs => {
+          const q = questions.find(x => String(x._id) === String(qs.questionId))
+          return { ...qs, text: q?.text || 'Unknown Question' }
+        })
+      }
+
       return {
         gameId: game._id,
         gameType: game.type,
@@ -24,9 +37,9 @@ router.get('/:eventId', async (req, res) => {
         totalCompletions: stats.totalCompletions || 0,
         avgScore: stats.avgScore || 0,
         avgMetrics: stats.avgMetrics || { revenue: 0, productivity: 0, conversion: 0, persistency: 0 },
-        questionStats: stats.questionStats || []
+        questionStats: enrichedQuestionStats
       }
-    })
+    }))
 
     res.json({ eventId, totalPlayers, games: result })
   } catch (err) {
