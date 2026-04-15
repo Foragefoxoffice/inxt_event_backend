@@ -21,7 +21,7 @@ const sessionSchema = new mongoose.Schema({
   completedAt: { type: Date, default: Date.now }
 }, { timestamps: true })
 
-sessionSchema.index({ playerId: 1, gameId: 1 }, { unique: true })
+sessionSchema.index({ playerId: 1, gameId: 1 })
 sessionSchema.index({ eventId: 1, gameType: 1 })
 sessionSchema.index({ gameId: 1, 'result.score': -1, completedAt: 1 })
 
