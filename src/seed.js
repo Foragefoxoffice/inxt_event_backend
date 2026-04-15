@@ -370,6 +370,8 @@ async function seed() {
       type: 'CROSSWORD',
       isActive: true
     })
+  } else {
+    await Game.findByIdAndUpdate(crosswordGame._id, { title: 'AI Challenge' })
   }
   await Question.deleteMany({ gameId: crosswordGame._id })
 
@@ -460,6 +462,8 @@ async function seed() {
       type: 'INTERVIEW',
       isActive: true
     })
+  } else {
+    await Game.findByIdAndUpdate(interviewGame._id, { title: 'Voices of AI' })
   }
   await Question.deleteMany({ gameId: interviewGame._id })
 
