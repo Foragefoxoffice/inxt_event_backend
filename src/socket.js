@@ -11,6 +11,17 @@ export function initSocket(httpServer) {
     socket.on('join:event', (eventId) => {
       socket.join(`event:${eventId}`)
     })
+
+    socket.on('join:game', ({ eventId, gameId, playerName }) => {
+      socket.join(`game:${gameId}`)
+      // Broadcast to others in the event that someone started a game
+      io.to(`event:${eventId}`).emit('player:activity', { gameId, playerName, status: 'playing' })
+    })
+
+    socket.on('leave:game', ({ eventId, gameId, playerName }) => {
+      socket.leave(`game:${gameId}`)
+      io.to(`event:${eventId}`).emit('player:activity', { gameId, playerName, status: 'left' })
+    })
   })
 
   return io

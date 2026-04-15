@@ -90,9 +90,17 @@ async function updateStatsAndEmit(eventId, gameType, session) {
 
 export async function submitGame({ playerId, userId, gameId, answers, duration }) {
   try {
-    console.log(`[ENGINE] Processing submission. ID: ${gameId}, Player: ${playerId}, Duration: ${duration}s`)
+    // 1. Prevent accidental duplicate submissions (within 10 seconds)
+    const recentSession = await Session.findOne({
+      userId,
+      gameId,
+      createdAt: { $gt: new Date(Date.now() - 10000) }
+    }).sort({ createdAt: -1 })
 
-    // Each play creates a fresh session (kiosk — multiple players on same device)
+    if (recentSession) {
+      console.log(`[ENGINE] Duplicate submission detected for user ${userId}. Returning existing session.`)
+      return { session: recentSession, alreadySubmitted: true }
+    }
 
     let game = await Game.findById(gameId).lean()
 
